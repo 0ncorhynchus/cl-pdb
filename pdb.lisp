@@ -1,3 +1,7 @@
+(in-package :net.benijake.pdb)
+
+(defvar *records* (make-hash-table :test #'equalp))
+
 (defgeneric read-string-as (type line args))
 
 (defun validated-index (index line)
@@ -45,7 +49,7 @@
         (args (cddr spec)))
     `(setf ,name (read-string-as ',type ,line ',args))))
 
-(defmacro defrecord (name slots)
+(defmacro defrecord (name record-name slots)
   (with-gensyms (typevar objectvar linevar)
     `(progn
       (defclass ,name ()
@@ -54,5 +58,17 @@
         (let ((,objectvar (make-instance ',name)))
           (with-slots ,(mapcar #'first slots) ,objectvar
             ,@(mapcar #'(lambda (x) (slot->read-string-as x linevar)) slots))
-        ,objectvar)))))
+        ,objectvar))
+      (setf (gethash ,record-name *records*) ',name))))
 
+(defun line->record (line)
+  (let* ((record-name (subseq line 0 6))
+         (record-type (gethash record-name *records*)))
+    (if record-type
+      (read-record record-type line))))
+
+(defun read-pdb (filename)
+  (with-open-file (in filename)
+    (loop for line = (read-line in nil)
+          while line
+          if (line->record line) collect it)))

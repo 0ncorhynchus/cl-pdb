@@ -1,8 +1,10 @@
-(defrecord title-record
+(in-package :net.benijake.pdb)
+
+(defrecord title-record "TITLE "
   ((continuation string 9 10)
    (title        string 11 80)))
 
-(defrecord atom-record
+(defrecord atom-record "ATOM  "
   ((serial     integer 7 11)
    (name       string 13 16)
    (altLoc     char 17)

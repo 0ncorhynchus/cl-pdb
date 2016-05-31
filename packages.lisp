@@ -1,2 +1,3 @@
 (defpackage :net.benijake.pdb
-  (:use :cl))
+  (:use :cl)
+  (:export :read-pdb))
