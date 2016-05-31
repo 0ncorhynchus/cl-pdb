@@ -24,3 +24,10 @@
    (tempFactor float 61 66 2)
    (element    string 77 78)
    (charge     string 79 80)))
+
+(defrecord ter-record "TER   "
+  ((serial  integer  7 11)
+   (resName string 18 20)
+   (chainID char 22)
+   (resSeq  integer 23 26)
+   (iCode char 27)))
