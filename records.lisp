@@ -1,5 +1,10 @@
 (in-package :net.benijake.pdb)
 
+(defrecord header-record "HEADER"
+  ((classification string 11 50)
+   (depDate        string 51 59)
+   (idCode         string 63 66)))
+
 (defrecord title-record "TITLE "
   ((continuation string 9 10)
    (title        string 11 80)))
