@@ -7,20 +7,26 @@
 (defun validated-index (index line)
   (min index (length line)))
 
+(defun modified-subseq (line start end)
+  (subseq line
+          (validated-index start line)
+          (validated-index end line)))
+
 (defmethod read-string-as ((type (eql 'string)) line args)
   (let ((start (1- (first args)))
         (end   (second args)))
-    (subseq line
-          (validated-index start line)
-          (validated-index end line))))
+    (modified-subseq line start end)))
 
 (defmethod read-string-as ((type (eql 'char)) line args)
-  (let ((n (first args)))
-    (char (read-string-as 'string line (list n n)) 0)))
+  (let* ((n (first args))
+         (str (read-string-as 'string line (list n n))))
+    (if (plusp (length str))
+      (char str 0))))
 
 (defmethod read-string-as ((type (eql 'integer)) line args)
   (parse-integer
-    (read-string-as 'string line args)))
+    (read-string-as 'string line args)
+    :junk-allowed t))
 
 (defmethod read-string-as ((type (eql 'float)) line args)
   (let* ((start (first args))
@@ -29,7 +35,8 @@
          (point (- end power))
          (a (read-string-as 'integer line (list start (1- point))))
          (b (read-string-as 'integer line (list (1+ point) end))))
-    (+ a (* b (expt 10.0 (- power))))))
+    (if (and a b)
+      (+ a (* b (expt 10.0 (- power)))))))
 
 (defgeneric read-record (type line))
 
@@ -62,7 +69,7 @@
       (setf (gethash ,record-name *records*) ',name))))
 
 (defun line->record (line)
-  (let* ((record-name (subseq line 0 6))
+  (let* ((record-name (string-trim " " (modified-subseq line 0 6)))
          (record-type (gethash record-name *records*)))
     (if record-type
       (read-record record-type line))))

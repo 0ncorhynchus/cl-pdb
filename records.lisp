@@ -5,11 +5,16 @@
    (depDate        string 51 59)
    (idCode         string 63 66)))
 
-(defrecord title-record "TITLE "
+(defrecord title-record "TITLE"
   ((continuation string 9 10)
    (title        string 11 80)))
 
-(defrecord atom-record "ATOM  "
+(defrecord model-record "MODEL"
+  ((serial integer 11 14)))
+
+(defrecord endmdl-record "ENDMDL" ())
+
+(defrecord atom-record "ATOM"
   ((serial     integer 7 11)
    (name       string 13 16)
    (altLoc     char 17)
@@ -25,7 +30,7 @@
    (element    string 77 78)
    (charge     string 79 80)))
 
-(defrecord ter-record "TER   "
+(defrecord ter-record "TER"
   ((serial  integer  7 11)
    (resName string 18 20)
    (chainID char 22)
