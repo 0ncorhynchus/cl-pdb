@@ -9,6 +9,20 @@
   ((continuation string 9 10)
    (title        string 11 80)))
 
+(defrecord remark-record "REMARK"
+  ((remarkNum integer 8 10)
+   (empty     string 12 79)))
+
+(defrecord cryst-record "CRYST1"
+  ((a      float 7 15 3)
+   (b      float 16 24 3)
+   (c      float 25 33 3)
+   (alpha  float 34 40 2)
+   (beta   float 41 47 2)
+   (gamma  float 48 54 2)
+   (sGroup string 56 66)
+   (z      integer 67 70)))
+
 (defrecord model-record "MODEL"
   ((serial integer 11 14)))
 
