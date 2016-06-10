@@ -40,12 +40,6 @@
 
 (defgeneric read-record (type line))
 
-(defmacro with-gensyms ((&rest names) &body body)
-  `(let ,(loop for n in names collect `(,n (gensym)))
-  ,@body))
-
-(defun as-keyword (sym) (intern (string sym) :keyword))
-
 (defun slot->defclass-slot (spec)
   (let ((name (first spec))
         (type (second spec)))
