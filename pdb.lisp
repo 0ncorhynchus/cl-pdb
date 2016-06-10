@@ -1,4 +1,4 @@
-(in-package :net.benijake.pdb)
+(in-package :pdb)
 
 (defvar *records* (make-hash-table :test #'equalp))
 

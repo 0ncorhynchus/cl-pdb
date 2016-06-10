@@ -1,4 +1,4 @@
-(in-package :net.benijake.pdb)
+(in-package :pdb)
 
 (defrecord header-record "HEADER"
   ((classification string 11 50)
