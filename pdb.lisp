@@ -52,6 +52,10 @@
         (args (cddr spec)))
     `(setf ,name (read-string-as ',type ,line ',args))))
 
+(defun export-slot (spec)
+  (let ((name (first spec)))
+    `(export ',name)))
+
 (defgeneric read-record (type line))
 
 (defmacro defrecord (name record-name slots)
@@ -64,6 +68,8 @@
           (with-slots ,(mapcar #'first slots) ,objectvar
             ,@(mapcar #'(lambda (x) (slot->read-string-as x linevar)) slots))
         ,objectvar))
+      (export ',name)
+      ,@(mapcar #'export-slot slots)
       (setf (gethash ,record-name *records*) ',name))))
 
 (defun line->record (line)
