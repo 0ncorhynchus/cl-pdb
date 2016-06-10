@@ -2,7 +2,8 @@
 
 (defvar *records* (make-hash-table :test #'equalp))
 
-(defgeneric read-string-as (type line args))
+(defun get-record-type (record-name)
+  (gethash record-name *records*))
 
 (defun validated-index (index line)
   (min index (length line)))
@@ -11,6 +12,8 @@
   (subseq line
           (validated-index start line)
           (validated-index end line)))
+
+(defgeneric read-string-as (type line args))
 
 (defmethod read-string-as ((type (eql 'string)) line args)
   (let ((start (1- (first args)))
@@ -38,8 +41,6 @@
     (if (and a b)
       (+ a (* b (expt 10.0 (- power)))))))
 
-(defgeneric read-record (type line))
-
 (defun slot->defclass-slot (spec)
   (let ((name (first spec))
         (type (second spec)))
@@ -50,6 +51,8 @@
         (type (second spec))
         (args (cddr spec)))
     `(setf ,name (read-string-as ',type ,line ',args))))
+
+(defgeneric read-record (type line))
 
 (defmacro defrecord (name record-name slots)
   (with-gensyms (typevar objectvar linevar)
@@ -65,7 +68,7 @@
 
 (defun line->record (line)
   (let* ((record-name (string-trim " " (modified-subseq line 0 6)))
-         (record-type (gethash record-name *records*)))
+         (record-type (get-record-type record-name)))
     (if record-type
       (read-record record-type line))))
 
@@ -74,3 +77,7 @@
     (loop for line = (read-line in nil)
           while line
           if (line->record line) collect it)))
+
+(defun filter-record (record-name pdb)
+  (let ((record-type (get-record-type record-name)))
+    (filter (lambda (x) (typep x record-type)) pdb)))

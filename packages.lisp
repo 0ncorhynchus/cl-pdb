@@ -1,3 +1,5 @@
 (defpackage :pdb
   (:use :cl)
-  (:export :read-pdb))
+  (:export :read-pdb
+           :filter-record
+           :coordinate))
