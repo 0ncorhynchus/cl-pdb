@@ -1,4 +1,4 @@
-(in-package :pdb)
+(in-package :cl-pdb)
 
 (defun coordinate (record)
   (list (x record) (y record) (z record)))

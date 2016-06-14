@@ -1,4 +1,4 @@
-(in-package :pdb)
+(in-package :cl-pdb)
 
 (defrecord header-record "HEADER"
   ((classification string 11 50)

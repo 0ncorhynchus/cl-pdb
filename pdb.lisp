@@ -1,4 +1,4 @@
-(in-package :pdb)
+(in-package :cl-pdb)
 
 (defvar *records* (make-hash-table :test #'equalp))
 
@@ -57,17 +57,21 @@
     `(export ',name)))
 
 (defgeneric read-record (type line))
+(defgeneric write-record (type record))
 
 (defmacro defrecord (name record-name slots)
-  (with-gensyms (typevar objectvar linevar)
+  (with-gensyms (typevar objectvar linevar recordvar)
     `(progn
       (defclass ,name ()
         ,(mapcar #'slot->defclass-slot slots))
       (defmethod read-record ((,typevar (eql ',name)) ,linevar)
         (let ((,objectvar (make-instance ',name)))
           (with-slots ,(mapcar #'first slots) ,objectvar
-            ,@(mapcar #'(lambda (x) (slot->read-string-as x linevar)) slots))
+            ,@(mapcar #'(lambda (x) (slot->read-string-as x linevar))
+                      slots))
         ,objectvar))
+      (defmethod write-record ((,typevar (eql ',name)) ,recordvar)
+        )
       (export ',name)
       ,@(mapcar #'export-slot slots)
       (setf (gethash ,record-name *records*) ',name))))

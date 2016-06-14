@@ -1,4 +1,4 @@
-(in-package :pdb)
+(in-package :cl-pdb)
 
 (defun as-keyword (sym) (intern (string sym) :keyword))
 

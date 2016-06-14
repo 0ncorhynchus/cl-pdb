@@ -1,4 +1,4 @@
-(defpackage :pdb
+(defpackage :cl-pdb
   (:use :cl)
   (:export :read-pdb
            :filter-record)
