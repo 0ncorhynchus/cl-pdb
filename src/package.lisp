@@ -6,4 +6,5 @@
   ;;; manipulation.lisp
   (:export :read-record
            :read-pdb
+           :record-type-p
            :filter-record))

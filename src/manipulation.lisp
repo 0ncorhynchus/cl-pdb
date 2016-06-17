@@ -20,6 +20,10 @@
         while line
         if (line->record line) collect it))
 
+(defun record-type-p (record-name record)
+  (declare (type string record-name))
+  (typep record (get-record-type record-name)))
+
 (defun filter-record (record-name pdb)
   (declare (type string record-name))
   (declare (type list pdb))
