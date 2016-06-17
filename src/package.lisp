@@ -1,7 +1,8 @@
 (defpackage :cl-pdb
-  (:use :cl)
-  (:export :read-pdb
-           :filter-record)
+  (:use :cl :alexandria)
   ;;; atom.lisp
   (:export :coordinate
-           :select-chain))
+           :select-chain)
+  ;;; manipulation.lisp
+  (:export :read-pdb
+           :filter-record))

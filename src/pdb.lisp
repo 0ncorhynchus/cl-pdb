@@ -5,14 +5,6 @@
 (defun get-record-type (record-name)
   (gethash record-name *records*))
 
-(defun validated-index (index line)
-  (min index (length line)))
-
-(defun modified-subseq (line start end)
-  (subseq line
-          (validated-index start line)
-          (validated-index end line)))
-
 (defgeneric read-string-as (type line args))
 
 (defmethod read-string-as ((type (eql 'string)) line args)
@@ -76,18 +68,3 @@
       ,@(mapcar #'export-slot slots)
       (setf (gethash ,record-name *records*) ',name))))
 
-(defun line->record (line)
-  (let* ((record-name (string-trim " " (modified-subseq line 0 6)))
-         (record-type (get-record-type record-name)))
-    (if record-type
-      (read-record record-type line))))
-
-(defun read-pdb (filename)
-  (with-open-file (in filename)
-    (loop for line = (read-line in nil)
-          while line
-          if (line->record line) collect it)))
-
-(defun filter-record (record-name pdb)
-  (let ((record-type (get-record-type record-name)))
-    (filter (lambda (x) (typep x record-type)) pdb)))
