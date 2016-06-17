@@ -4,5 +4,6 @@
   (:export :coordinate
            :select-chain)
   ;;; manipulation.lisp
-  (:export :read-pdb
+  (:export :read-record
+           :read-pdb
            :filter-record))

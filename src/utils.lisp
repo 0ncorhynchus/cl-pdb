@@ -3,6 +3,7 @@
 (defun as-keyword (sym) (intern (string sym) :keyword))
 
 (defun filter (fn lst)
+  (declare (type list lst))
   (unless (null lst)
     (let ((x (car lst)))
       (if (funcall fn x)
