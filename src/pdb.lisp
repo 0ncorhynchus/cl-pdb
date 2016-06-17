@@ -3,33 +3,32 @@
 (defvar *records* (make-hash-table :test #'equalp))
 
 (defun get-record-type (record-name)
+  (declare (type string record-name))
   (gethash record-name *records*))
 
-(defgeneric read-string-as (type line args))
+(defgeneric read-as (type line args))
 
-(defmethod read-string-as ((type (eql 'string)) line args)
+(defmethod read-as ((type (eql 'string)) line args)
   (let ((start (1- (first args)))
         (end   (second args)))
     (modified-subseq line start end)))
 
-(defmethod read-string-as ((type (eql 'char)) line args)
+(defmethod read-as ((type (eql 'char)) line args)
   (let* ((n (first args))
-         (str (read-string-as 'string line (list n n))))
+         (str (read-as 'string line (list n n))))
     (if (plusp (length str))
       (char str 0))))
 
-(defmethod read-string-as ((type (eql 'integer)) line args)
-  (parse-integer
-    (read-string-as 'string line args)
-    :junk-allowed t))
+(defmethod read-as ((type (eql 'integer)) line args)
+  (parse-integer (read-as 'string line args) :junk-allowed t))
 
-(defmethod read-string-as ((type (eql 'float)) line args)
+(defmethod read-as ((type (eql 'float)) line args)
   (let* ((start (first args))
          (end   (second args))
          (power (third args))
          (point (- end power))
-         (a (read-string-as 'integer line (list start (1- point))))
-         (b (read-string-as 'integer line (list (1+ point) end))))
+         (a (read-as 'integer line (list start (1- point))))
+         (b (read-as 'integer line (list (1+ point) end))))
     (if (and a b)
       (+ a (* b (expt 10.0 (- power)))))))
 
@@ -38,11 +37,11 @@
         (type (second spec)))
     `(,name :type ,type :initarg ,(as-keyword name) :accessor ,name)))
 
-(defun slot->read-string-as (spec line)
+(defun slot->read-as (spec line)
   (let ((name (first spec))
         (type (second spec))
         (args (cddr spec)))
-    `(setf ,name (read-string-as ',type ,line ',args))))
+    `(setf ,name (read-as ',type ,line ',args))))
 
 (defun export-slot (spec)
   (let ((name (first spec)))
@@ -58,7 +57,7 @@
       (defmethod parse-record ((,typevar (eql ',name)) ,linevar)
         (let ((,objectvar (make-instance ',name)))
           (with-slots ,(mapcar #'first slots) ,objectvar
-            ,@(mapcar #'(lambda (x) (slot->read-string-as x linevar))
+            ,@(mapcar #'(lambda (x) (slot->read-as x linevar))
                       slots))
         ,objectvar))
       (export ',name)
