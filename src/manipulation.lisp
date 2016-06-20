@@ -1,31 +1,33 @@
 (in-package :cl-pdb)
 
-(defun extract-record-name (line)
+(defun extract-serial (line)
   (string-trim " " (modified-subseq line 0 6)))
 
-(defun line->record (line)
+(define-condition unknown-record-type (error)
+  ((serial :initarg :serial :reader serial)))
+
+(defun parse-record (line)
   (declare (type string line))
-  (let* ((record-name (extract-record-name line))
-         (record-type (get-record-type record-name)))
+  (let* ((serial (extract-serial line))
+         (record-type (get-record-type serial)))
     (if record-type
-      (parse-record record-type line))))
+      (line->record record-type line)
+      (error 'unknown-record-type :serial serial))))
 
 (defun read-record (in)
   (declare (type stream in))
-  (line->record (read-line in)))
+  (let ((line (read-line in nil)))
+    (when line (parse-record line))))
 
 (defun read-pdb (in)
   (declare (type stream in))
-  (loop for line = (read-line in nil)
-        while line
-        if (line->record line) collect it))
+  (loop for record = (restart-case (read-record in)
+                       (skip-record () nil))
+        while record
+        collect record))
 
-(defun record-type-p (record-name record)
-  (declare (type string record-name))
-  (typep record (get-record-type record-name)))
-
-(defun filter-record (record-name pdb)
-  (declare (type string record-name))
+(defun filter-record (serial pdb)
+  (declare (type string serial))
   (declare (type list pdb))
-  (let ((record-type (get-record-type record-name)))
+  (let ((record-type (get-record-type serial)))
     (filter (lambda (x) (typep x record-type)) pdb)))
