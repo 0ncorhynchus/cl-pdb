@@ -1,5 +1,15 @@
 (in-package :cl-pdb)
 
+(defun coordinate (record)
+  (declare (type atom-record record))
+  (list (x record) (y record) (z record)))
+
+(defun select-chain (id records)
+  (declare (type list records))
+  (declare (type char id))
+  (filter (lambda (x) (char= id (chainID x))) records))
+
+
 (defun extract-serial (line)
   (string-trim " " (modified-subseq line 0 6)))
 
