@@ -2,7 +2,7 @@
   (:use :cl :alexandria)
   ;;; pdb.lisp
   (:export :record-p
-           :format-record)
+           :record->string)
   ;;; manipulation.lisp
   (:export :coordinate
            :select-chain

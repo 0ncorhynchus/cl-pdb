@@ -9,7 +9,7 @@
   ((continuation string 9 10)
    (title        string 11 80)))
 
-(defrecord remark-record "REMARK"
+(defrecord remarks-record "REMARK"
   ((remarkNum integer 8 10)
    (empty     string 12 79)))
 

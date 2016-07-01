@@ -6,7 +6,7 @@
 
 (defun select-chain (id records)
   (declare (type list records))
-  (declare (type char id))
+  (declare (type character id))
   (filter (lambda (x) (char= id (chainID x))) records))
 
 

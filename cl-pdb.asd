@@ -12,7 +12,5 @@
           :depends-on ("package" "utils"))
    (:file "records"
           :depends-on ("package" "pdb"))
-   (:file "atom"
-          :depends-on ("package" "records"))
    (:file "manipulation"
           :depends-on ("package" "utils" "pdb"))))
